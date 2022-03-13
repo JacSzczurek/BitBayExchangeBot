@@ -16,13 +16,13 @@ namespace BitBayApiClient
             return JsonConvert.DeserializeObject<TickerResponse>(response.Content);
         }
 
-        public async Task GetStats(string currency)
+        public async Task<StatsResponse> GetStats(string currency)
         {
             var client = new RestClient($"https://api.zonda.exchange/rest/trading/stats/{currency}");
             var request = new RestRequest("", Method.Get);
             request.AddHeader("Accept", "application/json");
             var response = await client.ExecuteAsync(request);
-            var c = JsonConvert.DeserializeObject<StatsResponse>(response.Content);
+            return JsonConvert.DeserializeObject<StatsResponse>(response.Content);
         }
 
     }
@@ -30,6 +30,6 @@ namespace BitBayApiClient
     public interface IBitBayClient
     {
         Task<TickerResponse> GetThicker(string currency);
-        Task GetStats(string currency);
+        Task<StatsResponse> GetStats(string currency);
     }
 }
