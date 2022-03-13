@@ -1,7 +1,12 @@
+
+using BitBayApiClient;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddTransient<IBitBayClient, BitBayClient>();
 
 var app = builder.Build();
 
