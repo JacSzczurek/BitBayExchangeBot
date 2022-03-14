@@ -8,14 +8,16 @@ namespace BitBayApiClient
     public class BitBayClient : IBitBayClient, IDisposable
     {
         readonly IConfiguration _configuration;
+        private readonly IBitBayApiHashGenerator _bitBayApiHashGenerator;
         readonly RestClient _client;
-        public BitBayClient(IConfiguration configuration)
+        public BitBayClient(IConfiguration configuration, IBitBayApiHashGenerator bitBayApiHashGenerator)
         {
             var options = new RestClientOptions("https://api.zonda.exchange/rest/");
 
-            _client = new RestClient(options)
-                            .AddDefaultHeader(KnownHeaders.Accept, "application/json");
+            _client = new RestClient(options);
+                            //.AddDefaultHeader(KnownHeaders.Accept, "application/json");
             _configuration = configuration;
+            _bitBayApiHashGenerator = bitBayApiHashGenerator;
         }
         public async Task<TickerResponse> GetThicker(string currency)
         {
@@ -32,18 +34,38 @@ namespace BitBayApiClient
             return JsonConvert.DeserializeObject<StatsResponse>(response.Content);
         }
 
-        public async Task NewOffer(string currency)
+        public async Task NewOffer(string currency, NewOfferRequest requestPayload)
         {
             var request = new RestRequest($"trading/offer/{currency}", Method.Post);
+            request.AddJsonBody(requestPayload);
+            request.RequestFormat = DataFormat.Json;
+            SetPostHeaders(request, requestPayload);
+            var response = await _client.ExecuteAsync(request);
+
+            var d = JsonConvert.SerializeObject(requestPayload);
+            var c = JsonConvert.DeserializeObject<StatsResponse>(response.Content);
+        }
+
+        public async Task GetActiveOffers(string currency)
+        {
+            var request = new RestRequest($"trading/offer/{currency}", Method.Get);
+            //request.AddJsonBody(requestPayload);
+            //request.RequestFormat = DataFormat.Json;
             SetPostHeaders(request);
             var response = await _client.ExecuteAsync(request);
+            var c = JsonConvert.DeserializeObject<StatsResponse>(response.Content);
         }
-        private void SetPostHeaders(RestRequest request)
+
+        private void SetPostHeaders(RestRequest request, object payload = null)
         {
-            request.AddHeader("API-Key", _configuration["ApiKey"]);
-            request.AddHeader("API-Hash", _configuration["ApiHash"]);
+            var timeStamp = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds().ToString();
+            var hash = _bitBayApiHashGenerator.ComputeBitBayHash(payload, timeStamp);
+
+            request.AddHeader("API-Key", _configuration["ApiKeyPublic"]);
+            request.AddHeader("API-Hash", hash);
             request.AddHeader("operation-id", Guid.NewGuid());
-            request.AddHeader("Request-Timestamp", ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds());
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Request-Timestamp", timeStamp);
             request.AddHeader("Content-Type", "application/json");
         }
 
@@ -58,5 +80,7 @@ namespace BitBayApiClient
     {
         Task<TickerResponse> GetThicker(string currency);
         Task<StatsResponse> GetStats(string currency);
+        Task NewOffer(string currency, NewOfferRequest requestPayload);
+        Task GetActiveOffers(string currency);
     }
 }

@@ -1,4 +1,5 @@
 using BitBayApiClient;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 
 builder.Services.AddSingleton<IBitBayClient, BitBayClient>();
+builder.Services.AddSingleton<IBitBayApiHashGenerator, BitBayApiHashGenerator>();
 
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
