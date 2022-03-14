@@ -8,7 +8,7 @@ namespace BitBayApiClient.Models
 {
     public class BaseResponse
     {
-        public string? Status { get; set; }
-        public List<ErrorMessagesEnum>? Errors { get; set; } 
+        public string Status { get; set; }
+        public List<ErrorMessagesEnum> Errors { get; set; } 
     }
 }

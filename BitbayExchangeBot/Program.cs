@@ -1,4 +1,3 @@
-
 using BitBayApiClient;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +5,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddTransient<IBitBayClient, BitBayClient>();
+builder.Services.AddSingleton<IBitBayClient, BitBayClient>();
+
+builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+{
+    config.AddJsonFile("authConfig.json",
+                       optional: false,
+                       reloadOnChange: true);
+});
 
 var app = builder.Build();
 
