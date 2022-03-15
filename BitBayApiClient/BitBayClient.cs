@@ -34,7 +34,7 @@ namespace BitBayApiClient
             return JsonConvert.DeserializeObject<StatsResponse>(response.Content);
         }
 
-        public async Task NewOffer(string currency, NewOfferRequest requestPayload)
+        public async Task<BaseResponse> NewOffer(string currency, NewOfferRequest requestPayload)
         {
             var request = new RestRequest($"trading/offer/{currency}", Method.Post);
             request.AddJsonBody(requestPayload);
@@ -42,18 +42,15 @@ namespace BitBayApiClient
             SetPostHeaders(request, requestPayload);
             var response = await _client.ExecuteAsync(request);
 
-            var d = JsonConvert.SerializeObject(requestPayload);
-            var c = JsonConvert.DeserializeObject<StatsResponse>(response.Content);
+            return JsonConvert.DeserializeObject<BaseResponse>(response.Content);
         }
 
-        public async Task GetActiveOffers(string currency)
+        public async Task<GetActiveOfferResponse> GetActiveOffers(string currency)
         {
             var request = new RestRequest($"trading/offer/{currency}", Method.Get);
-            //request.AddJsonBody(requestPayload);
-            //request.RequestFormat = DataFormat.Json;
             SetPostHeaders(request);
             var response = await _client.ExecuteAsync(request);
-            var c = JsonConvert.DeserializeObject<StatsResponse>(response.Content);
+            return JsonConvert.DeserializeObject<GetActiveOfferResponse>(response.Content);
         }
 
         private void SetPostHeaders(RestRequest request, object payload = null)
@@ -80,7 +77,7 @@ namespace BitBayApiClient
     {
         Task<TickerResponse> GetThicker(string currency);
         Task<StatsResponse> GetStats(string currency);
-        Task NewOffer(string currency, NewOfferRequest requestPayload);
-        Task GetActiveOffers(string currency);
+        Task<BaseResponse> NewOffer(string currency, NewOfferRequest requestPayload);
+        Task<GetActiveOfferResponse> GetActiveOffers(string currency);
     }
 }

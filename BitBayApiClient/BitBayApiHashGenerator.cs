@@ -11,36 +11,35 @@ namespace BitBayApiClient
 {
     public class BitBayApiHashGenerator : IBitBayApiHashGenerator
     {
-        private readonly IConfiguration _configuration;
-
-        public BitBayApiHashGenerator(IConfiguration configuration)
+        private string _keyPublic { get; set; }
+        private string _keyPrivate { get; set; }
+        public BitBayApiHashGenerator(string keyPublic, string keyPrivate)
         {
-            _configuration = configuration;
+            _keyPublic = keyPublic;
+            _keyPrivate = keyPrivate;
         }
 
         public string ComputeBitBayHash(object payload, string timeStamp)
-        {
-            var keyPrivate = _configuration["ApiKeyPrivate"];
-            var keyPublic = _configuration["ApiKeyPublic"];
+        {           
 
-            if (keyPrivate == null)
-                throw new ArgumentNullException(nameof(keyPrivate));
+            if (_keyPrivate == null)
+                throw new ArgumentNullException(nameof(_keyPrivate));
 
-            if (keyPublic == null)
-                throw new ArgumentNullException(nameof(keyPublic));
+            if (_keyPublic == null)
+                throw new ArgumentNullException(nameof(_keyPublic));
 
             var hash = new StringBuilder(); ;
-            byte[] secretkeyBytes = Encoding.UTF8.GetBytes(keyPrivate);
+            byte[] secretkeyBytes = Encoding.UTF8.GetBytes(_keyPrivate);
 
             byte[] inputBytes;
             if (payload == null)
             {
-                inputBytes = Encoding.UTF8.GetBytes(keyPublic + timeStamp);
+                inputBytes = Encoding.UTF8.GetBytes(_keyPublic + timeStamp);
             }
             else
             {
                 var jsonObject = JsonConvert.SerializeObject(payload);
-                inputBytes = Encoding.UTF8.GetBytes(keyPublic + timeStamp + jsonObject);
+                inputBytes = Encoding.UTF8.GetBytes(_keyPublic + timeStamp + jsonObject);
             }
              
             using (var hmac = new HMACSHA512(secretkeyBytes))

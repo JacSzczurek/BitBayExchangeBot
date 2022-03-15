@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitbayExchangeBot", "Bitbay
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitBayApiClient", "BitBayApiClient\BitBayApiClient.csproj", "{2909BC5C-2A53-45EA-97C3-DC9C7E4E5C53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitBayTests", "BitBayTests\BitBayTests.csproj", "{D57F6EED-5D64-44EA-B182-130658E27439}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2909BC5C-2A53-45EA-97C3-DC9C7E4E5C53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2909BC5C-2A53-45EA-97C3-DC9C7E4E5C53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2909BC5C-2A53-45EA-97C3-DC9C7E4E5C53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D57F6EED-5D64-44EA-B182-130658E27439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D57F6EED-5D64-44EA-B182-130658E27439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D57F6EED-5D64-44EA-B182-130658E27439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D57F6EED-5D64-44EA-B182-130658E27439}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
